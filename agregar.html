@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1><a href="index.html">ACTIVIDADES EN BEAUCHEFF HELLYEAH</a></h1>
+      <div class="navbar">
+        <a href="agregar.html" class="section">AGREGAR ACTIVIDAD 🛠️</a>
+        <a href="listado.html" class="section">VER OTRAS ACTIVIDADES 🔍</a>
+        <a href="estadisticas.html" class="section">ESTADÍSTICAS ☝️🤓</a>
+      </div>
+
+      <div class="addactivity">
+        <form>
+          <label for="region">Region<span id="required">*</span></label>
+          <select name="select-region" id="select-region" required>
+            <option value="">seleccione una región</option>
+          </select>
+
+          <label for="comuna">Comuna<span id="required">*</span></label>
+          <select name="comuna" id="select-comuna" required>
+            <option value="">seleccione una comuna</option>
+          </select>
+
+          <label for="sector">Sector</label>
+          <input type="text" name="sector" id="sector" maxlength="100" />
+
+          <label for="nombre">Nombre<span id="required">*</span></label>
+          <input
+            type="text"
+            name="nombre"
+            id="nombre"
+            maxlength="200"
+            required
+          />
+
+          <label for="email">Email<span id="required">*</span></label>
+          <input
+            type="email"
+            name="email"
+            id="email"
+            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+            maxlength="100"
+            required
+          />
+
+          <label for="telefono">Telefono<span id="required">*</span></label>
+          <input
+            type="text"
+            name="telefono"
+            id="telefono"
+            pattern="\+\d{3}\.\d{8}"
+          />
+
+          <label for="contacto">Contacto</label>
+          <select name="contacto" id="select-contacto">
+            <option value="">seleccione método de contacto</option>
+            <option value="whatsapp">WhatsApp</option>
+            <option value="telegram">Telegram</option>
+            <option value="x">X</option>
+            <option value="tiktok">Tik Tok</option>
+            <option value="otra">Otra</option>
+          </select>
+          <div style="display: none">
+            <label for="otra">Otra</label>
+            <input type="text" name="otra" id="otra" />
+          </div>
+
+          <label for="inicio">Inicio<span id="required">*</span></label>
+          <input type="datetime-local" id="inicio" name="inicio" required />
+
+          <label for="final">Final</label>
+          <input type="datetime-local" id="final" name="final" />
+
+          <label for="descripcion">Descripción</label>
+          <textarea
+            id="inicio"
+            name="inicio"
+            cols="50"
+            rows="10"
+            placeholder="Escribe aquí..."
+          ></textarea>
+
+          <label for="tema">Tema<span id="required">*</span></label>
+          <select name="tema" id="select-tema" required>
+            <option value="">seleccione un tema</option>
+            <option value="musica">musica</option>
+            <option value="deporte">deporte</option>
+            <option value="ciencia">ciencia</option>
+            <option value="religion">religion</option>
+            <option value="politica">politica</option>
+            <option value="tecnologia">tecnologia</option>
+            <option value="juegos">juegos</option>
+            <option value="baile">baile</option>
+            <option value="comida">comida</option>
+            <option value="otra">otro</option>
+          </select>
+          <div style="display: none">
+            <label for="otra">Otra</label>
+            <input
+              type="text"
+              name="otra"
+              id="otra"
+              minlength="3"
+              maxlength="15"
+            />
+          </div>
+
+          <label for="img">imagen<span id="required">*</span></label>
+          <input name="img" id="img" type="file" required />
+          <button class="addimage">+</button>
+
+          <button id="add">Agregar actividad</button>
+
+          <div id="errores" style="display: none">
+            <ul id="errores_lista"></ul>
+          </div>
+          <h2 id="exito" style="display: none"></h2>
+        </form>
+      </div>
+    </div>
+    <script src="script_agregar.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js"></script>
+  </body>
+</html>

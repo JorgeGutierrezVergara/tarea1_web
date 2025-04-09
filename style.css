@@ -1,0 +1,117 @@
+* {
+  margin: 0;
+}
+
+body {
+  background-color: rgb(165, 165, 165);
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+}
+
+h1 {
+  text-align: center;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  cursor: default;
+}
+
+.recentactivities {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 80vh;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+  border: 1px solid white;
+}
+
+.section:hover {
+  border: 1px solid black;
+}
+
+table {
+  border-collapse: collapse;
+  border: 2px solid #333;
+}
+
+table th,
+td {
+  padding: 12px 15px;
+  text-align: left;
+  border: 1px solid black;
+}
+
+.addactivity {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  background-color: bisque;
+  text-align: center;
+  padding: 25px;
+  width: 250px;
+}
+
+#required {
+  color: red;
+}
+
+#errores_lista {
+  display: none;
+  margin-top: "20px";
+  border: 2px solid red;
+  color: red;
+}
+
+#exito {
+  display: none;
+  margin-top: "20px";
+  border: 2px solid green;
+  color: green;
+}
+
+.container_estadisticas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 35px;
+}
+
+.container_estadisticas img {
+  width: 500px;
+  margin: 25px;
+}
+
+.c2 {
+  display: flex;
+}
+
+#im3 {
+  width: 700px;
+}
