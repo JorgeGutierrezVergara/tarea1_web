@@ -1,15 +1,28 @@
 import { actividades } from "./actividades.js";
-// Index
-const tabla = document.getElementById("tabla");
-actividades.forEach((el) => {
-  const fila = tabla.insertRow();
 
-  fila.insertCell().textContent = el[0];
-  fila.insertCell().textContent = el[1];
-  fila.insertCell().textContent = el[2];
-  fila.insertCell().textContent = el[3];
-  fila.insertCell().textContent = el[4];
+const tablaPortada = document.getElementById("tabla");
+const actividadesParaPortada = actividades.slice(0, 5);
+
+actividadesParaPortada.forEach((actividad) => {
+  const fila = tablaPortada.insertRow();
+
+  fila.insertCell().textContent = actividad.diaHoraInicio || "N/A";
+  fila.insertCell().textContent = actividad.diaHoraTermino || "N/A";
+  fila.insertCell().textContent = actividad.comuna || "N/A";
+  fila.insertCell().textContent = actividad.sector || "N/A";
+
+  fila.insertCell().textContent =
+    actividad.nombreActividad ||
+    (actividad.temas && actividad.temas.length > 0
+      ? actividad.temas[0]
+      : "N/A");
 
   const celdaImagen = fila.insertCell();
-  celdaImagen.innerHTML = `<img src="${el[6]}" alt="Imagen" style="width: 100px; height: auto;">`;
+  if (actividad.fotos && actividad.fotos.length > 0) {
+    celdaImagen.innerHTML = `<img src="${actividad.fotos[0]}" alt="Foto de ${
+      actividad.nombreActividad || "actividad"
+    }" style="width: 100px; height: auto; object-fit: cover;">`;
+  } else {
+    celdaImagen.textContent = "Sin foto";
+  }
 });

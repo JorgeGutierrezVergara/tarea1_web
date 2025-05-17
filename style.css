@@ -78,7 +78,7 @@ form {
   width: 250px;
 }
 
-#required {
+.required {
   color: red;
 }
 
@@ -87,13 +87,6 @@ form {
   margin-top: "20px";
   border: 2px solid red;
   color: red;
-}
-
-#exito {
-  display: none;
-  margin-top: "20px";
-  border: 2px solid green;
-  color: green;
 }
 
 .container_estadisticas {
@@ -114,4 +107,54 @@ form {
 
 #im3 {
   width: 700px;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 25px 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: auto;
+
+  .modal-content p {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.1em;
+  }
+
+  .modal-content button,
+  .modal-content .button-link {
+    margin: 8px;
+    padding: 10px 18px;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 1em;
+    text-decoration: none;
+    color: #333;
+    display: inline-block;
+  }
+
+  #btn_confirmar_si_submit {
+    background-color: #5cb85c;
+    color: white;
+    border-color: #4cae4c;
+  }
 }
