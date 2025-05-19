@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tarea 1</title>
+    <link rel="stylesheet" href="../static/css/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>
+        <a href="{{ url_for('home') }}">ACTIVIDADES EN BEAUCHEFF HELLYEAH</a>
+      </h1>
+      <div class="navbar">
+        <a href="{{ url_for('agregar_actividad_page') }}" class="section"
+          >AGREGAR ACTIVIDAD 🛠️</a
+        >
+        <a href="{{ url_for('listado_actividades_page') }}" class="section"
+          >VER OTRAS ACTIVIDADES 🔍</a
+        >
+        <a href="{{ url_for('estadisticas_page') }}" class="section"
+          >ESTADÍSTICAS ☝️🤓</a
+        >
+      </div>
+      <div class="recentactivities">
+        <table id="tabla">
+          <thead>
+            <tr>
+              <th>Inicio</th>
+              <th>Término</th>
+              <th>Comuna</th>
+              <th>Sector</th>
+              <th>Tema</th>
+              <th>Foto</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+    <script type="module" src="../static/js/script.js"></script>
+  </body>
+</html>

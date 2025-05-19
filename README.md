@@ -1,14 +1,18 @@
-# tarea1_web
+# tarea2_web
 
-tarea1_web
+tarea2_web
 
 Para ejecutar esta tarea hay que abrir una terminal en la raíz de la misma y ejecutar:
-python -m http.server 8000
-una vez hecho esto, dirigirse a http://localhost:8000/index.html
+python -m venv venv
+Una vez creado el ambiente, instalar las dependencias con:
+.\venv\Scripts\activate
+una vez en el ambiente, ejecutar:
+python "app.py"
+y dirigirse al enlace que entrega la consola
 
-- El título de la página y los nombres de las secciones son clickeables para navegar en la aplicación en todas las vistas.
-- En la landing page se pueden ver las últimas cinco actividades creadas
-- En agregar actividad se encuentra el form para verificación. No se implementó la verificación de las fechas
-  porque la librería que intenté usar me estaba dando fallos. La imagen no pude solucionarlo. Tampoco se implementó que al seleccionar "otro" en "Contacto" o "Tema" se despliegue el input para escribir. Tampoco la confirmación final para enviar el form. El form sí es capaz de verificar los otros campos e informar al usuario de cuáles de ellos presentan errores y de no haberlos, nmuestra un mensaje de éxito.
-- En "Ver otras actividades" se implementó una lista con las actividades y botones que despliegan u ocultan sus respectivas tablas con información. No se implementó ver imágenes múltiples, pero la mostrada es clickeable y se agranda o reduce.
-- En estadísticas se colocaron los gráficos, estos fueron hechos en python con matplotlib y numpy.
+- Todos los errores de la Tarea 1 fueron corregidos
+- Se migró la app estática a flask
+- Se cargó la base de datos de forma exitosa
+- En el formulario, el selector de región y comuna se cargan dinámicamente con datos de la base de datos
+- El formulario es capaz de tomar los datos y enviárselos al backend de flask, pero no se pudo implementar la subida a la base de datos
+- Por este último punto, ninguna de las tablas de carga de forma dinámica con la base de datos.
