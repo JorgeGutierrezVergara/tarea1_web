@@ -225,7 +225,7 @@
           <fieldset id="fieldset_tema">
             <legend>Tema<span class="required">*</span></legend>
             <label>
-              <input type="checkbox" name="tema_opcion" value="musica" />
+              <input type="checkbox" name="tema_opcion" value="música" />
               Música </label
             ><br />
 
@@ -240,17 +240,17 @@
             ><br />
 
             <label>
-              <input type="checkbox" name="tema_opcion" value="religion" />
+              <input type="checkbox" name="tema_opcion" value="religión" />
               Religión </label
             ><br />
 
             <label>
-              <input type="checkbox" name="tema_opcion" value="politica" />
+              <input type="checkbox" name="tema_opcion" value="política" />
               Política </label
             ><br />
 
             <label>
-              <input type="checkbox" name="tema_opcion" value="tecnologia" />
+              <input type="checkbox" name="tema_opcion" value="tecnología" />
               Tecnología </label
             ><br />
 
@@ -344,8 +344,8 @@
     </div>
     <script>
       const todasLasComunasDesdeServidor = {{ todas_las_comunas | tojson }};
+      const todasLasRegionesDesdeServidor = {{ regiones | tojson }};
     </script>
     <script src="../static/js/script_agregar.js" type="module"></script>
-    <script src="https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js"></script>
   </body>
 </html>

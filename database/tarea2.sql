@@ -16,7 +16,7 @@ DROP SCHEMA IF EXISTS `tarea2` ;
 -- -----------------------------------------------------
 -- Schema tarea2
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `tarea2` DEFAULT CHARACTER SET utf8 ;
+CREATE SCHEMA IF NOT EXISTS `tarea2` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `tarea2` ;
 
 -- -----------------------------------------------------

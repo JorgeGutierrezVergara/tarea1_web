@@ -88,7 +88,8 @@ def get_db_session():
 def obtener_todas_las_regiones_bd(db_session):
     try:
         regiones = db_session.query(Region).order_by(Region.nombre).all()
-        return regiones
+        regiones_data = [{'id': r.id, 'nombre': r.nombre} for r in regiones]
+        return regiones_data
     except Exception as e:
         print(f"Error al obtener regiones: {e}")
         return []

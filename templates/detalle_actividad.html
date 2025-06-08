@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detalle de {{ actividad.nombre }}</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>
+        <a href="{{ url_for('home') }}">ACTIVIDADES EN BEAUCHEFF HELLYEAH</a>
+      </h1>
+      <div class="navbar">
+        <a href="{{ url_for('agregar_actividad_page') }}" class="section"
+          >AGREGAR ACTIVIDAD 🛠️</a
+        >
+        <a href="{{ url_for('listado_actividades_page') }}" class="section"
+          >VER OTRAS ACTIVIDADES 🔍</a
+        >
+        <a href="{{ url_for('estadisticas_page') }}" class="section"
+          >ESTADÍSTICAS ☝️🤓</a
+        >
+      </div>
+      <h2>Detalle de la Actividad</h2>
+
+      <div class="detalle-container">
+        <h3>
+          <strong>Temas:</strong>
+          {% for tema_obj in temas %} {# CAMBIO #} {% if tema_obj.tema == 'otro'
+          and tema_obj.glosa_otro %}{{ tema_obj.glosa_otro | capitalize }}{%
+          else %}{{ tema_obj.tema | capitalize }}{% endif %}{% if not loop.last
+          %}, {% endif %} {% else %} No especificados. {% endfor %}
+        </h3>
+
+        <h4>Información General</h4>
+        <ul class="lista-detalles-actividad">
+          <li>
+            <strong>Inicio:</strong> {{
+            actividad.dia_hora_inicio.strftime('%d-%m-%Y %H:%M') }}
+          </li>
+          <li>
+            <strong>Término:</strong> {{
+            actividad.dia_hora_termino.strftime('%d-%m-%Y %H:%M') if
+            actividad.dia_hora_termino else 'No definido' }}
+          </li>
+          <li><strong>Región:</strong> {{ nombre_region }}</li>
+          {# CAMBIO #}
+          <li><strong>Comuna:</strong> {{ nombre_comuna }}</li>
+          {# CAMBIO #}
+          <li>
+            <strong>Sector:</strong> {{ actividad.sector or 'No especificado' }}
+          </li>
+          <li>
+            <strong>Descripción:</strong> {{ actividad.descripcion or 'No
+            especificada' }}
+          </li>
+          <li>Creador: {{ actividad.nombre }}</li>
+        </ul>
+
+        <h4>Información de Contacto</h4>
+        <ul class="lista-detalles-actividad">
+          <li><strong>Organizador:</strong> {{ actividad.nombre }}</li>
+          <li><strong>Email:</strong> {{ actividad.email }}</li>
+          <li>
+            <strong>Celular:</strong> {{ actividad.celular or 'No especificado'
+            }}
+          </li>
+          <li>
+            <strong>Otros Contactos:</strong>
+            {# Este bucle recorre la lista, y si la lista está vacía, ejecuta el
+            bloque 'else' #} {% for contacto in contactos %} {{ contacto.nombre
+            | capitalize }}: {{ contacto.identificador }}{% if not loop.last %}
+            | {% endif %} {% else %} No especificados. {% endfor %}
+          </li>
+        </ul>
+
+        <h4>Fotos de la Actividad</h4>
+        <div class="fotos-container">
+          {% if fotos %} {# CAMBIO #} {% for foto in fotos %} {# CAMBIO #}
+          <img
+            src="{{ url_for('static', filename='UPLOAD_FOLDER/' + foto.ruta_archivo) }}"
+            alt="Foto de la actividad"
+            style="width: 320px; height: 240px; object-fit: cover"
+            onclick="abrirModalConImagen('{{ url_for('static', filename='UPLOAD_FOLDER/' + foto.ruta_archivo) }}')"
+          />
+          {% endfor %} {% else %}
+          <p>No hay fotos para esta actividad.</p>
+          {% endif %}
+        </div>
+
+        <div class="botones-detalle">
+          <a
+            href="{{ url_for('listado_actividades_page') }}"
+            class="button-link"
+            >Volver al Listado</a
+          >
+          <a href="{{ url_for('home') }}" class="button-link"
+            >Volver a la Portada</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <div id="modal_imagen_grande" class="modal-overlay" style="display: none">
+      <span class="cerrar-modal" id="btn_cerrar_img_grande">&times;</span>
+
+      <img
+        class="modal-contenido"
+        id="imagen_grande_src"
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        alt="Imagen de la actividad en tamaño grande"
+      />
+    </div>
+    <script>
+      const modal = document.getElementById("modal_imagen_grande");
+      const imgGrande = document.getElementById("imagen_grande_src");
+      function abrirModalConImagen(urlDeLaImagen) {
+        modal.style.display = "flex";
+        imgGrande.src = urlDeLaImagen;
+      }
+      document.getElementById("btn_cerrar_img_grande").onclick = function () {
+        modal.style.display = "none";
+      };
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+    </script>
+  </body>
+</html>

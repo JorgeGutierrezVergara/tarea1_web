@@ -22,33 +22,64 @@
           >ESTADÍSTICAS ☝️🤓</a
         >
       </div>
-      <div id="recentactivities">
-        <h3>Listado actividades:</h3>
-      </div>
-      <div id="detalle_actividad_vista" style="display: none">detalle :D</div>
-      <div
-        id="modal_imagen_grande_listado"
-        class="modal-overlay"
-        style="display: none"
-      >
-        <div class="modal-content">
-          <img
-            id="imagen_grande_src_listado"
-            src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
-            alt="Foto ampliada"
-            style="display: block; margin: auto"
-          />
-          <br />
-          <button
-            type="button"
-            id="btn_cerrar_img_grande_listado"
-            style="margin-top: 10px"
+
+      <h2>Listado Completo de Actividades</h2>
+
+      <div class="listado-actividades">
+        <table id="tabla-listado">
+          <thead>
+            <tr>
+              <th>Inicio</th>
+              <th>Término</th>
+              <th>Comuna</th>
+              <th>Sector</th>
+              <th>Tema</th>
+              <th>Nombre Organizador</th>
+              <th>Total Fotos</th>
+            </tr>
+          </thead>
+          {% for act in actividades %}
+          <tr
+            class="fila-actividad"
+            onclick="window.location='{{ url_for('detalle_actividad_page', actividad_id=act.id) }}';"
           >
-            Cerrar
-          </button>
-        </div>
+            <td>{{ act.dia_hora_inicio.strftime('%d-%m-%Y %H:%M') }}</td>
+            <td>
+              {{ act.dia_hora_termino.strftime('%d-%m-%Y %H:%M') if
+              act.dia_hora_termino else 'No definido' }}
+            </td>
+            <td>{{ act.comuna.nombre }}</td>
+            <td>{{ act.sector or 'N/A' }}</td>
+            <td>
+              {# La lógica para el tema que ya tienes está perfecta #} {% if
+              act.temas_asociados %}{% set primer_tema = act.temas_asociados[0]
+              %}{% if primer_tema.tema == 'otro' and primer_tema.glosa_otro %}{{
+              primer_tema.glosa_otro | capitalize }}{% else %}{{
+              primer_tema.tema | capitalize }}{% endif %}{% else %}N/A{% endif
+              %}
+            </td>
+            <td>{{ act.nombre }}</td>
+            {# El nombre del organizador/actividad #}
+            <td>{{ act.fotos|length }}</td>
+            {# El total de fotos #}
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+
+      <div class="pagination">
+        {% if page > 1 %}
+        <a href="{{ url_for('listado_actividades_page', page=page-1) }}"
+          >&laquo; Anterior</a
+        >
+        {% endif %} {% if total_pages > 1 %}
+        <span>Página {{ page }} de {{ total_pages }}</span>
+        {% endif %} {% if page < total_pages %}
+        <a href="{{ url_for('listado_actividades_page', page=page+1) }}"
+          >Siguiente &raquo;</a
+        >
+        {% endif %}
       </div>
     </div>
-    <script type="module" src="../static/js/script_listado.js"></script>
   </body>
 </html>

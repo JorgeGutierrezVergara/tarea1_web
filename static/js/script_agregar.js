@@ -164,29 +164,18 @@ btnAgregarFoto.addEventListener("click", function () {
 // verificaciones
 
 const validateRegion = (region_buscada) => {
-  let regiones = [];
-  region_comuna.regiones.forEach((el) => regiones.push(el.nombre));
-  if (regiones.includes(region_buscada)) {
-    return true;
-  } else {
-    return false;
-  }
+  if (!region_buscada) return false;
+  return todasLasRegionesDesdeServidor.some(
+    (region) => region.id == region_buscada
+  );
 };
 
-const validateComuna = (region, comuna) => {
-  if (!region) return false;
-  const datosregion = region_comuna.regiones.find(
-    (reg) => reg.nombre === region
+const validateComuna = (region_buscada, comuna_buscada) => {
+  if (!region || !comuna) return false;
+  return todasLasComunasDesdeServidor.some(
+    (comuna) =>
+      comuna.id == comuna_buscada && comuna.region_id == region_buscada
   );
-  let comunas = [];
-  datosregion.comunas.forEach((element) => {
-    comunas.push(element.nombre);
-  });
-  if (comunas.includes(comuna)) {
-    return true;
-  } else {
-    return false;
-  }
 };
 
 const validateName = (name) => {
