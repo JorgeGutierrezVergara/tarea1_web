@@ -25,11 +25,40 @@
       <div class="container_estadisticas">
         <h2>Estadisticas</h2>
         <div class="c2">
-          <img src="../static/img/g1.png" alt="graf1" />
-          <img src="../static/img/g2.png" alt="graf2" />
+          <div
+            id="container-grafico-lineas"
+            class="grafico-container"
+            style="min-width: 310px; height: 400px; margin: 0 auto"
+          >
+            <p>Cargando gráfico de actividades por día...</p>
+          </div>
+          <div
+            id="container-grafico-torta"
+            class="grafico-container"
+            style="min-width: 310px; height: 400px; margin: 0 auto"
+          >
+            <p>Cargando gráfico de actividades por tema...</p>
+          </div>
         </div>
-        <img id="im3" src="../static/img/g3.png" alt="graf3" />
+        <div
+          id="container-grafico-barras"
+          class="grafico-container"
+          style="min-width: 310px; height: 400px; margin: 0 auto"
+        >
+          <p>Cargando gráfico de actividades por mes y periodo del día...</p>
+        </div>
+      </div>
+      <div class="botones-detalle" style="margin-top: 20px">
+        <a href="{{ url_for('home') }}" class="button-link"
+          >Volver a la Portada</a
+        >
       </div>
     </div>
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="{{ url_for('static', filename='js/script_estadisticas.js') }}"></script>
   </body>
 </html>

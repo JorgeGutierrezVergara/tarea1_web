@@ -92,6 +92,54 @@
           {% endif %}
         </div>
 
+        <h4>Comentarios</h4>
+        <div
+          id="comentarios-listado"
+          class="lista-comentarios"
+          data-actividad-id="{{ actividad.id }}"
+        >
+          <p id="comentarios-mensaje">Cargando comentarios...</p>
+        </div>
+
+        <h4>Agregar un Comentario</h4>
+        <form id="form-agregar-comentario" class="form-comentario">
+          <div
+            id="comentario-errores"
+            class="errores-formulario"
+            style="display: none"
+          ></div>
+
+          <div class="form-group">
+            <label for="nombre-comentario"
+              >Tu Nombre<span class="required">*</span></label
+            >
+            <input
+              type="text"
+              id="nombre-comentario"
+              name="nombre"
+              required
+              minlength="3"
+              maxlength="80"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="texto-comentario"
+              >Comentario<span class="required">*</span></label
+            >
+            <textarea
+              id="texto-comentario"
+              name="texto"
+              required
+              minlength="5"
+              rows="4"
+              cols="50"
+            ></textarea>
+          </div>
+
+          <button type="submit">Agregar comentario</button>
+        </form>
+
         <div class="botones-detalle">
           <a
             href="{{ url_for('listado_actividades_page') }}"
@@ -115,21 +163,6 @@
         alt="Imagen de la actividad en tamaño grande"
       />
     </div>
-    <script>
-      const modal = document.getElementById("modal_imagen_grande");
-      const imgGrande = document.getElementById("imagen_grande_src");
-      function abrirModalConImagen(urlDeLaImagen) {
-        modal.style.display = "flex";
-        imgGrande.src = urlDeLaImagen;
-      }
-      document.getElementById("btn_cerrar_img_grande").onclick = function () {
-        modal.style.display = "none";
-      };
-      window.onclick = function (event) {
-        if (event.target == modal) {
-          modal.style.display = "none";
-        }
-      };
-    </script>
+    <script src="{{ url_for('static', filename='js/script_detalle.js') }}"></script>
   </body>
 </html>

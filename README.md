@@ -1,6 +1,6 @@
-# tarea2_web
+# tarea3_web
 
-tarea2_web
+tarea3_web
 
 Para ejecutar esta tarea hay que abrir una terminal en la raíz de la misma y ejecutar:
 python -m venv venv

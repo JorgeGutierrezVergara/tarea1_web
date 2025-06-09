@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, BigInteger, String, ForeignKey, DateTime, Enum
+from sqlalchemy import create_engine, Column, Integer, BigInteger, String, ForeignKey, DateTime, Enum, TIMESTAMP, desc
 from sqlalchemy.orm import sessionmaker, declarative_base, relationship
 from contextlib import contextmanager
 import json
@@ -31,6 +31,15 @@ class Comuna(Base):
     
     actividades = relationship('Actividad', backref='comuna', lazy=True)
 
+
+class Comentario(Base):
+    __tablename__ = 'comentario'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    nombre = Column(String(80), nullable=False)
+    texto = Column(String(300), nullable=False)
+    fecha = Column(TIMESTAMP, nullable=False)
+    actividad_id = Column(Integer, ForeignKey('actividad.id'), nullable=False)
+
 class Actividad(Base):
     __tablename__ = 'actividad'
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -42,6 +51,8 @@ class Actividad(Base):
     dia_hora_inicio = Column(DateTime, nullable=False)
     dia_hora_termino = Column(DateTime, nullable=True)
     descripcion = Column(String(500), nullable=True)
+
+    comentarios = relationship('Comentario', backref='actividad', lazy=True, cascade="all, delete-orphan", order_by=desc(Comentario.fecha))
 
     fotos = relationship('Foto', backref='actividad_obj', lazy=True, cascade="all, delete-orphan")
     contactos = relationship('ContactarPor', backref='actividad_obj', lazy=True, cascade="all, delete-orphan")
@@ -70,6 +81,7 @@ class ActividadTema(Base):
     tema = Column(Enum('música', 'deporte', 'ciencias', 'religión', 'política', 'tecnología', 'juegos', 'baile', 'comida', 'otro'), nullable=False)
     glosa_otro = Column(String(15), nullable=True) 
     actividad_id = Column(Integer, ForeignKey('actividad.id'), primary_key=True, nullable=False)
+
 
 @contextmanager
 def get_db_session(): 

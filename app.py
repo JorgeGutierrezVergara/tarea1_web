@@ -1,10 +1,11 @@
 import os
-from flask import Flask, redirect, url_for, render_template, request, flash, abort
+from flask import Flask, redirect, url_for, render_template, request, flash, abort, jsonify 
 from datetime import datetime
 from werkzeug.utils import secure_filename
-from database.db import Base, engine, get_db_session, Region, Comuna, Actividad, Foto, ContactarPor, ActividadTema
+from database.db import Base, engine, get_db_session, Region, Comuna, Actividad, Foto, ContactarPor, ActividadTema, Comentario 
 from database.db import obtener_todas_las_regiones_bd, obtener_todas_las_comunas_bd, crear_tablas_bd
-from sqlalchemy import desc
+from sqlalchemy import desc, func, extract, case
+from sqlalchemy.sql import and_ 
 from sqlalchemy.orm import joinedload
 import math
 
@@ -59,7 +60,7 @@ def agregar_actividad_page():
 @app.route('/listado') 
 def listado_actividades_page():   
     page = request.args.get('page', 1, type=int)
-    per_page = 5 # Definimos cuántas actividades mostrar por página. 
+    per_page = 5  
     
     actividades_paginadas = []
     total_actividades = 0
@@ -92,16 +93,14 @@ def listado_actividades_page():
 def detalle_actividad_page(actividad_id):
     try:
         with get_db_session() as db_sess:
-            # 1. Buscamos la actividad principal
             actividad = db_sess.query(Actividad).filter(Actividad.id == actividad_id).first()
             
             if not actividad:
                 abort(404)
             
-            # 2. EXTRAEMOS TODOS LOS DATOS RELACIONADOS MIENTRAS LA SESIÓN ESTÁ ABIERTA
             nombre_comuna = actividad.comuna.nombre
             nombre_region = actividad.comuna.region.nombre
-            lista_fotos = list(actividad.fotos) # Convertimos a lista normal
+            lista_fotos = list(actividad.fotos) 
             lista_temas = list(actividad.temas_asociados)
             lista_contactos = list(actividad.contactos)
 
@@ -112,7 +111,6 @@ def detalle_actividad_page(actividad_id):
         flash("Hubo un error al cargar los detalles de la actividad.", "danger")
         return redirect(url_for('listado_actividades_page'))
 
-    # 3. PASAMOS TODO POR SEPARADO A LA PLANTILLA
     return render_template('detalle_actividad.html', 
                            actividad=actividad,
                            nombre_comuna=nombre_comuna,
@@ -127,19 +125,6 @@ def estadisticas_page():
 
 @app.route('/procesar_actividad', methods=['POST'])
 def procesar_nueva_actividad():
-    print("--- DENTRO DE procesar_nueva_actividad ---") 
-    #
-    print("\n---[ DEBUG: DATOS RECIBIDOS DEL FORMULARIO ]---")
-    print(f"Nombre: {request.form.get('nombre')}")
-    print(f"Email: {request.form.get('email')}")
-    print(f"ID Región: {request.form.get('select-region')}")
-    print(f"ID Comuna: {request.form.get('comuna')}")
-    print(f"Temas seleccionados: {request.form.getlist('tema_opcion')}")
-    print(f"Checkbox 'Otro Tema': {request.form.get('tema_opcion_otro_checkbox')}")
-    print(f"Texto 'Otro Tema': {request.form.get('otra_tema_texto')}")
-    print(f"Archivos recibidos: {request.files.getlist('fotos_actividad[]')}")
-    print("--------------------------------------------------\n")
-    #
     errores_servidor = []
     datos_previos = request.form 
     nombres_archivos_guardados = []
@@ -223,7 +208,6 @@ def procesar_nueva_actividad():
     if total_contactos_seleccionados > MAX_METODOS_CONTACTO:
         errores_servidor.append(f"Puedes seleccionar un máximo de {MAX_METODOS_CONTACTO} formas de contacto.")
       
-    # Listas las validaciones. Ahora se intenta enviar
 
     if errores_servidor:
         flash('Por favor, corrige los errores indicados en el formulario.', 'danger')
@@ -306,6 +290,170 @@ def procesar_nueva_actividad():
             print("---------------------------------")
             flash(f"Error interno al guardar la actividad: {e}", "danger")
             return redirect(url_for('agregar_actividad_page'))
+
+
+
+@app.route('/api/actividad/<int:actividad_id>/comentarios', methods=['GET', 'POST'])
+def api_comentarios(actividad_id):
+    if request.method == 'GET':
+     
+        try:
+            with get_db_session() as db_sess:
+                actividad_obj = db_sess.query(Actividad).filter(Actividad.id == actividad_id).first()
+                if not actividad_obj:
+                    return jsonify({"error": "Actividad no encontrada."}), 404
+
+                comentarios_data = [
+                    {"nombre": c.nombre, "texto": c.texto, "fecha": c.fecha.strftime('%d-%m-%Y %H:%M')}
+                    for c in actividad_obj.comentarios
+                ]
+                return jsonify(comentarios_data)
+        except Exception as e:
+            print(f"--- ¡ERROR EN API GET COMENTARIOS! ---")
+            print(f"ERROR: {e}")
+            return jsonify({"error": "No se pudieron cargar los comentarios."}), 500
+
+    if request.method == 'POST':
+       
+        try:
+            nombre = request.form.get('nombre', '').strip()
+            texto = request.form.get('texto', '').strip()
+            if not (3 <= len(nombre) <= 80):
+                return jsonify({"error": "El nombre debe tener entre 3 y 80 caracteres."}), 400
+            if len(texto) < 5:
+                return jsonify({"error": "El comentario debe tener al menos 5 caracteres."}), 400
+
+            with get_db_session() as db_sess:
+                actividad_obj = db_sess.query(Actividad).filter(Actividad.id == actividad_id).first()
+                if not actividad_obj:
+                    return jsonify({"error": "Actividad no encontrada."}), 404
+
+                nuevo_comentario = Comentario(
+                    nombre=nombre,
+                    texto=texto,
+                    fecha=datetime.now(),
+                    actividad_id=actividad_id
+                )
+                db_sess.add(nuevo_comentario)
+                db_sess.flush() 
+                comentario_guardado = {
+                    "nombre": nuevo_comentario.nombre,
+                    "texto": nuevo_comentario.texto,
+                    "fecha": nuevo_comentario.fecha.strftime('%d-%m-%Y %H:%M')
+                }
+                
+                return jsonify(comentario_guardado), 201
+
+        except Exception as e:
+            print(f"--- ¡ERROR EN API POST COMENTARIO! ---")
+            print(f"ERROR: {e}")
+            return jsonify({"error": "Ocurrió un error interno al guardar el comentario."}), 500
+
+
+@app.route('/api/estadisticas/actividades_por_dia')
+def api_actividades_por_dia():
+    try:
+        with get_db_session() as db_sess:
+            resultado = db_sess.query(
+                func.date(Actividad.dia_hora_inicio).label('fecha'),
+                func.count(Actividad.id).label('cantidad')
+            ).group_by('fecha').order_by('fecha').all()
+
+            data_para_grafico = []
+            for registro in resultado:
+                fecha_python = registro.fecha
+                timestamp_js = int(datetime.combine(fecha_python, datetime.min.time()).timestamp() * 1000)
+                data_para_grafico.append([timestamp_js, registro.cantidad])
+            return jsonify(data_para_grafico)
+
+    except Exception as e:
+        print(f"--- ¡ERROR EN API DE ESTADÍSTICAS (ACTIVIDADES POR DÍA)! ---")
+        print(f"ERROR: {e}")
+        return jsonify({"error": "No se pudieron calcular los datos para el gráfico."}), 500
+
+@app.route('/api/estadisticas/actividades_por_tipo')
+def api_actividades_por_tipo():
+    try:
+        with get_db_session() as db_sess:
+            resultado = db_sess.query(
+                ActividadTema.tema.label('nombre_tema'), 
+                func.count(Actividad.id).label('cantidad_actividades')
+            ).join(Actividad, Actividad.id == ActividadTema.actividad_id)\
+             .group_by(ActividadTema.tema)\
+             .order_by(ActividadTema.tema)\
+             .all()
+
+            data_para_grafico = []
+            for registro in resultado:
+                data_para_grafico.append({
+                    'name': registro.nombre_tema,
+                    'y': registro.cantidad_actividades
+                })
+
+            return jsonify(data_para_grafico)
+
+    except Exception as e:
+        print(f"--- ¡ERROR EN API DE ESTADÍSTICAS (ACTIVIDADES POR TEMA)! ---")
+        print(f"ERROR: {e}")
+        return jsonify({"error": "No se pudieron calcular los datos para el gráfico de torta."}), 500
+
+@app.route('/api/estadisticas/actividades_por_mes_y_periodo')
+def api_actividades_por_mes_y_periodo():
+    try:
+        with get_db_session() as db_sess:
+            nombres_meses = {
+                1: 'Enero', 2: 'Febrero', 3: 'Marzo', 4: 'Abril', 5: 'Mayo', 6: 'Junio',
+                7: 'Julio', 8: 'Agosto', 9: 'Septiembre', 10: 'Octubre', 11: 'Noviembre', 12: 'Diciembre'
+            }
+
+            resultados_raw = db_sess.query(
+                extract('month', Actividad.dia_hora_inicio).label('mes'),
+                case(
+                    (and_(extract('hour', Actividad.dia_hora_inicio) >= 6, extract('hour', Actividad.dia_hora_inicio) < 12), 'Mañana'),
+                    (and_(extract('hour', Actividad.dia_hora_inicio) >= 12, extract('hour', Actividad.dia_hora_inicio) < 18), 'Mediodía'),
+                    else_='Tarde' # Cualquier otra hora (18:00-23:59 y 00:00-05:59)
+                ).label('periodo_dia'),
+                func.count(Actividad.id).label('cantidad')
+            ).group_by('mes', 'periodo_dia')\
+             .order_by('mes', 'periodo_dia')\
+             .all()
+
+            meses_ordenados = sorted(list(set([r.mes for r in resultados_raw])))
+
+            categorias_meses = [nombres_meses[m] for m in meses_ordenados]
+
+            data_manana = [0] * len(meses_ordenados)
+            data_mediodia = [0] * len(meses_ordenados)
+            data_tarde = [0] * len(meses_ordenados)
+
+            for mes_num, periodo_dia, cantidad in resultados_raw:
+                # Este print ahora debería ejecutarse si la consulta funciona
+                print(f"Contenido desempaquetado: mes_num={mes_num}, periodo_dia={periodo_dia}, cantidad={cantidad}")
+
+                idx_mes = meses_ordenados.index(mes_num)
+                if periodo_dia == 'Mañana':
+                    data_manana[idx_mes] = cantidad
+                elif periodo_dia == 'Mediodía':
+                    data_mediodia[idx_mes] = cantidad
+                elif periodo_dia == 'Tarde':
+                    data_tarde[idx_mes] = cantidad
+
+            series_para_grafico = [
+                {'name': 'Mañana', 'data': data_manana},
+                {'name': 'Mediodía', 'data': data_mediodia},
+                {'name': 'Tarde', 'data': data_tarde}
+            ]
+
+            return jsonify({
+                'categories': categorias_meses,
+                'series': series_para_grafico
+            })
+
+    except Exception as e:
+        print(f"--- ¡ERROR EN API DE ESTADÍSTICAS (ACTIVIDADES POR MES Y PERIODO)! ---")
+        print(f"ERROR: {e}")
+        return jsonify({"error": "No se pudieron calcular los datos para el gráfico de barras."}), 500
+
 
 if __name__ == "__main__":
     crear_tablas_bd()
