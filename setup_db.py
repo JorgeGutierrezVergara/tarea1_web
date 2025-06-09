@@ -36,16 +36,12 @@ def run_sql_script(script_path, user, password, db_name):
         print(f"Script {script_path} ejecutado exitosamente.")
     except subprocess.CalledProcessError as e:
         print(f"¡ERROR al ejecutar {script_path}!")
-        print(f"Código de salida: {e.returncode}")
-        print(f"Stdout: {e.stdout}")
-        print(f"Stderr: {e.stderr}")
         exit(1) # Salir si un script falla
     except FileNotFoundError:
         print(f"Error: El comando 'mysql' no se encontró. Asegúrate de que MySQL CLI esté en tu PATH.")
         exit(1)
 
 if __name__ == "__main__":
-    print("Iniciando ejecución de scripts SQL...")
     for script_name in sql_scripts:
         script_full_path = os.path.join(SQL_DIR, script_name)
         if not os.path.exists(script_full_path):
