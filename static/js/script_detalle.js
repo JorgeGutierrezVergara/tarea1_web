@@ -48,10 +48,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
           const autorP = document.createElement("p");
           autorP.className = "comentario-autor";
-          autorP.innerHTML = `<strong>${comentario.nombre}</strong> el ${comentario.fecha}`;
+          autorP.innerHTML = `<strong>${comentario.nombre}</strong> (${comentario.fecha}):`;
 
-          comentarioDiv.appendChild(textoP);
           comentarioDiv.appendChild(autorP);
+          comentarioDiv.appendChild(textoP);
 
           listadoDiv.appendChild(comentarioDiv);
         });
@@ -128,16 +128,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const comentarioDiv = document.createElement("div");
     comentarioDiv.className = "comentario-item";
 
+    const autorP = document.createElement("p");
+    autorP.className = "comentario-autor";
+    autorP.innerHTML = `<strong>${comentario.nombre}</strong> (${comentario.fecha}):`;
+
     const textoP = document.createElement("p");
     textoP.className = "comentario-texto";
     textoP.textContent = comentario.texto;
 
-    const autorP = document.createElement("p");
-    autorP.className = "comentario-autor";
-    autorP.innerHTML = `<strong>${comentario.nombre}</strong> el ${comentario.fecha}`;
-
-    comentarioDiv.appendChild(textoP);
     comentarioDiv.appendChild(autorP);
+    comentarioDiv.appendChild(textoP);
     listadoDiv.prepend(comentarioDiv);
   }
 });

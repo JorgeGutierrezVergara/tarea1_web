@@ -89,7 +89,6 @@ def listado_actividades_page():
                            total_pages=total_pages)
 
 @app.route('/actividad/<int:actividad_id>')
-@app.route('/actividad/<int:actividad_id>')
 def detalle_actividad_page(actividad_id):
     try:
         with get_db_session() as db_sess:
@@ -105,9 +104,6 @@ def detalle_actividad_page(actividad_id):
             lista_contactos = list(actividad.contactos)
 
     except Exception as e:
-        print(f"--- ¡ERROR EN DETALLE DE ACTIVIDAD! ---")
-        print(f"ERROR: {e}")
-        print(f"---------------------------------------")
         flash("Hubo un error al cargar los detalles de la actividad.", "danger")
         return redirect(url_for('listado_actividades_page'))
 
@@ -281,17 +277,13 @@ def procesar_nueva_actividad():
                     )
                     db_sess.add(contacto_db)
 
-            flash('¡Actividad GUARDADA con todos sus datos en la Base de Datos!', 'success')
+            flash('Actividad GUARDADA en la Base de Datos', 'success')
             return redirect(url_for('home'))
 
         except Exception as e:
             print(f"---¡ERROR AL GUARDAR EN LA BD!---")
-            print(f"ERROR: {e}")
-            print("---------------------------------")
             flash(f"Error interno al guardar la actividad: {e}", "danger")
             return redirect(url_for('agregar_actividad_page'))
-
-
 
 @app.route('/api/actividad/<int:actividad_id>/comentarios', methods=['GET', 'POST'])
 def api_comentarios(actividad_id):
@@ -310,7 +302,6 @@ def api_comentarios(actividad_id):
                 return jsonify(comentarios_data)
         except Exception as e:
             print(f"--- ¡ERROR EN API GET COMENTARIOS! ---")
-            print(f"ERROR: {e}")
             return jsonify({"error": "No se pudieron cargar los comentarios."}), 500
 
     if request.method == 'POST':
@@ -346,9 +337,7 @@ def api_comentarios(actividad_id):
 
         except Exception as e:
             print(f"--- ¡ERROR EN API POST COMENTARIO! ---")
-            print(f"ERROR: {e}")
             return jsonify({"error": "Ocurrió un error interno al guardar el comentario."}), 500
-
 
 @app.route('/api/estadisticas/actividades_por_dia')
 def api_actividades_por_dia():
@@ -368,7 +357,6 @@ def api_actividades_por_dia():
 
     except Exception as e:
         print(f"--- ¡ERROR EN API DE ESTADÍSTICAS (ACTIVIDADES POR DÍA)! ---")
-        print(f"ERROR: {e}")
         return jsonify({"error": "No se pudieron calcular los datos para el gráfico."}), 500
 
 @app.route('/api/estadisticas/actividades_por_tipo')
@@ -394,7 +382,6 @@ def api_actividades_por_tipo():
 
     except Exception as e:
         print(f"--- ¡ERROR EN API DE ESTADÍSTICAS (ACTIVIDADES POR TEMA)! ---")
-        print(f"ERROR: {e}")
         return jsonify({"error": "No se pudieron calcular los datos para el gráfico de torta."}), 500
 
 @app.route('/api/estadisticas/actividades_por_mes_y_periodo')
@@ -411,7 +398,7 @@ def api_actividades_por_mes_y_periodo():
                 case(
                     (and_(extract('hour', Actividad.dia_hora_inicio) >= 6, extract('hour', Actividad.dia_hora_inicio) < 12), 'Mañana'),
                     (and_(extract('hour', Actividad.dia_hora_inicio) >= 12, extract('hour', Actividad.dia_hora_inicio) < 18), 'Mediodía'),
-                    else_='Tarde' # Cualquier otra hora (18:00-23:59 y 00:00-05:59)
+                    else_='Tarde'
                 ).label('periodo_dia'),
                 func.count(Actividad.id).label('cantidad')
             ).group_by('mes', 'periodo_dia')\
@@ -427,7 +414,6 @@ def api_actividades_por_mes_y_periodo():
             data_tarde = [0] * len(meses_ordenados)
 
             for mes_num, periodo_dia, cantidad in resultados_raw:
-                # Este print ahora debería ejecutarse si la consulta funciona
                 print(f"Contenido desempaquetado: mes_num={mes_num}, periodo_dia={periodo_dia}, cantidad={cantidad}")
 
                 idx_mes = meses_ordenados.index(mes_num)
@@ -451,7 +437,6 @@ def api_actividades_por_mes_y_periodo():
 
     except Exception as e:
         print(f"--- ¡ERROR EN API DE ESTADÍSTICAS (ACTIVIDADES POR MES Y PERIODO)! ---")
-        print(f"ERROR: {e}")
         return jsonify({"error": "No se pudieron calcular los datos para el gráfico de barras."}), 500
 
 
